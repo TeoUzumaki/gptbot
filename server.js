@@ -13,14 +13,32 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 app.post('/chat', async (req, res) => {
   const { message } = req.body;
-  console.log("Received message:", message);  // <--- Added this line
+  console.log("Received message:", message);  // <--- Your original log line
 
   if (!message) return res.status(400).json({ error: 'Message required' });
 
+  // Get current date/time in London timezone
+  const currentDateTime = new Date().toLocaleString('en-GB', {
+    timeZone: 'Europe/London',
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  });
+
   try {
+    const messages = [
+      { role: "system", content: "You are a helpful assistant." },
+      { role: "user", content: `The current date and time in London is ${currentDateTime}. User asked: ${message}` },
+    ];
+
     const chatResponse = await openai.chat.completions.create({
-      model: "gpt-4", // ✅ Updated to accessible model
-      messages: [{ role: "user", content: message }],
+      model: "gpt-4",
+      messages: messages,
     });
 
     res.json({ reply: chatResponse.choices[0].message.content });
@@ -32,6 +50,7 @@ app.post('/chat', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
 
 
