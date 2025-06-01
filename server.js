@@ -17,7 +17,7 @@ app.post('/chat', async (req, res) => {
 
   try {
     const chatResponse = await openai.chat.completions.create({
-      model: "gpt-4_1", // ✅ Updated to accessible model
+      model: "gpt-4", // ✅ Updated to accessible model
       messages: [{ role: "user", content: message }],
     });
 
