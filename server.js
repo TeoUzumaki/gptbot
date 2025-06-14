@@ -11,13 +11,17 @@ app.use(express.json());
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+// Health check route
+app.get('/health', (req, res) => {
+  res.status(200).send('GPT bot server is awake');
+});
+
 app.post('/chat', async (req, res) => {
   const { message } = req.body;
-  console.log("Received message:", message);  // <--- Your original log line
+  console.log("Received message:", message);
 
   if (!message) return res.status(400).json({ error: 'Message required' });
 
-  // Get current date/time in London timezone
   const currentDateTime = new Date().toLocaleString('en-GB', {
     timeZone: 'Europe/London',
     weekday: 'long',
@@ -50,6 +54,7 @@ app.post('/chat', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
 
 
